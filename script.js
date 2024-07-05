@@ -1,4 +1,4 @@
-const Gameboard = (() => {
+    const Gameboard = (() => {
     let board = Array(9).fill(null);
 
     const getBoard = () => board;
@@ -27,10 +27,10 @@ const GameController = (() => {
     let currentPlayerIndex;
     let gameOver;
 
-    const start = () => {
+    const start = (player1Name, player2Name) => {
         players = [
-            Player('Player X', 'X'),
-            Player('Player O', 'O')
+            Player(player1Name, 'X'),
+            Player(player2Name, 'O')
         ];
         currentPlayerIndex = 0;
         gameOver = false;
@@ -64,7 +64,6 @@ const GameController = (() => {
 
         if (Gameboard.makeMove(index, getCurrentPlayer().marker)) {
             const board = Gameboard.getBoard();
-            console.log("Current board state:", board);
 
             if (checkWin(board, getCurrentPlayer().marker)) {
                 gameOver = true;
@@ -85,15 +84,6 @@ const GameController = (() => {
     return { start, playTurn, getCurrentPlayer, isGameOver };
 })();
 
-GameController.start();
-
-// how to play in the console
-console.log(GameController.playTurn(0)); // X plays in top-left corner
-console.log(GameController.playTurn(4)); // O plays in center
-console.log(GameController.playTurn(1)); // X plays in top-center
-console.log(GameController.playTurn(5)); // O plays in middle-right
-console.log(GameController.playTurn(2)); // X plays in top-right, wins the game
-
 const DisplayController = (() => {
     const renderBoard = () => {
         const board = Gameboard.getBoard();
@@ -109,9 +99,26 @@ const DisplayController = (() => {
     };
 
     const init = () => {
-        renderBoard();
-        document.getElementById('gameboard').addEventListener('click', (e) => {
-            if (e.target.classList.contains('cell')) {
+        const gameContainer = document.getElementById('game-container');
+        const playerSetup = document.getElementById('player-setup');
+        const startButton = document.getElementById('start-btn');
+        const restartButton = document.getElementById('restart-btn');
+        const gameboard = document.getElementById('gameboard');
+
+        startButton.addEventListener('click', () => {
+            const player1Name = document.getElementById('player1-name').value || 'Player X';
+            const player2Name = document.getElementById('player2-name').value || 'Player O';
+            
+            GameController.start(player1Name, player2Name);
+            renderBoard();
+            updateMessage(`Game started! ${player1Name}'s turn`);
+            
+            playerSetup.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+        });
+
+        gameboard.addEventListener('click', (e) => {
+            if (e.target.classList.contains('cell') && !GameController.isGameOver()) {
                 const index = parseInt(e.target.getAttribute('data-index'));
                 const result = GameController.playTurn(index);
                 renderBoard();
@@ -119,14 +126,15 @@ const DisplayController = (() => {
             }
         });
 
-        document.getElementById('restart-btn').addEventListener('click', () => {
-            GameController.start();
-            renderBoard();
-            updateMessage("Game started! X's turn");
+        restartButton.addEventListener('click', () => {
+            playerSetup.classList.remove('hidden');
+            gameContainer.classList.add('hidden');
+            document.getElementById('player1-name').value = '';
+            document.getElementById('player2-name').value = '';
         });
     };
 
-    return { init, renderBoard, updateMessage };
+    return { init };
 })();
 
 DisplayController.init();
