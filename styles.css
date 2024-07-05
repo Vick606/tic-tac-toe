@@ -16,6 +16,21 @@ h1 {
     color: #333;
 }
 
+.player-setup {
+    margin-bottom: 20px;
+}
+
+.player-setup input {
+    margin: 5px;
+    padding: 5px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .gameboard {
     display: grid;
     grid-template-columns: repeat(3, 100px);
@@ -45,7 +60,7 @@ h1 {
     height: 1.5em;
 }
 
-.restart-btn {
+.restart-btn, #start-btn {
     padding: 10px 20px;
     font-size: 1em;
     background-color: #4CAF50;
@@ -54,6 +69,10 @@ h1 {
     cursor: pointer;
 }
 
-.restart-btn:hover {
+.restart-btn:hover, #start-btn:hover {
     background-color: #45a049;
+}
+
+.hidden {
+    display: none;
 }
