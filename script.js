@@ -1,4 +1,4 @@
-    const Gameboard = (() => {
+const Gameboard = (() => {
     let board = Array(9).fill(null);
 
     const getBoard = () => board;
@@ -90,7 +90,13 @@ const DisplayController = (() => {
         const cells = document.querySelectorAll('.cell');
         
         cells.forEach((cell, index) => {
-            cell.textContent = board[index] || '';
+            if (board[index] === 'X') {
+                cell.innerHTML = '<i class="fas fa-times"></i>';
+            } else if (board[index] === 'O') {
+                cell.innerHTML = '<i class="far fa-circle"></i>';
+            } else {
+                cell.innerHTML = '';
+            }
         });
     };
 
