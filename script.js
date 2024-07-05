@@ -85,5 +85,48 @@ const GameController = (() => {
     return { start, playTurn, getCurrentPlayer, isGameOver };
 })();
 
-// Game initialization
 GameController.start();
+
+// how to play in the console
+console.log(GameController.playTurn(0)); // X plays in top-left corner
+console.log(GameController.playTurn(4)); // O plays in center
+console.log(GameController.playTurn(1)); // X plays in top-center
+console.log(GameController.playTurn(5)); // O plays in middle-right
+console.log(GameController.playTurn(2)); // X plays in top-right, wins the game
+
+const DisplayController = (() => {
+    const renderBoard = () => {
+        const board = Gameboard.getBoard();
+        const cells = document.querySelectorAll('.cell');
+        
+        cells.forEach((cell, index) => {
+            cell.textContent = board[index] || '';
+        });
+    };
+
+    const updateMessage = (message) => {
+        document.getElementById('message').textContent = message;
+    };
+
+    const init = () => {
+        renderBoard();
+        document.getElementById('gameboard').addEventListener('click', (e) => {
+            if (e.target.classList.contains('cell')) {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                const result = GameController.playTurn(index);
+                renderBoard();
+                updateMessage(result);
+            }
+        });
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            GameController.start();
+            renderBoard();
+            updateMessage("Game started! X's turn");
+        });
+    };
+
+    return { init, renderBoard, updateMessage };
+})();
+
+DisplayController.init();
